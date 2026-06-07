@@ -21,23 +21,17 @@ def load_config():
 def table_sync():
     from mall.db.engines.mysql import get_engine
     from mall.db.models.base import BASE
-    from mall.db.models.User.model import User, UserAddress
+    from mall.db.models.User.model import User,UserAddress
     from mall.db.models.GoodsCatalog.model import GoodsCatalog
-    from mall.db.models.Goods.model import (
-        GoodsCategory, GoodsSpu, GoodsSku, GoodsSpec,
-        GoodsComment, SearchHistory
-    )
+    from mall.db.models.Goods.model import GoodsSpu, GoodsSku,GoodsSpec
 
     tables = [
         BASE.metadata.tables["t_mall_user"],
         BASE.metadata.tables["t_mall_user_address"],
         BASE.metadata.tables["t_mall_goodscatalog"],
-        BASE.metadata.tables["t_mall_goods_category"],
         BASE.metadata.tables["t_mall_goods_spu"],
         BASE.metadata.tables["t_mall_goods_sku"],
         BASE.metadata.tables["t_mall_goods_spec"],
-        BASE.metadata.tables["t_mall_goods_comment"],
-        BASE.metadata.tables["t_mall_search_history"],
     ]
     BASE.metadata.create_all(get_engine(), tables=tables, checkfirst=True)
 
@@ -76,25 +70,10 @@ def init_area():
 
 
 
-
-
-
-
-def init_goods_seed():
-    """初始化商品分类和种子数据"""
-    from mall.db.models.Goods.sql import GoodsCategoryDao, seed_default_goods
-    LOG.info("开始初始化商品分类种子数据...")
-    GoodsCategoryDao.seed_default_categories()
-    LOG.info("开始初始化商品种子数据...")
-    seed_default_goods()
-    LOG.info("商品种子数据初始化完成")
-
-
 def main():
     load_config()
     table_sync()
     init_area()
-    init_goods_seed()
 
 
 

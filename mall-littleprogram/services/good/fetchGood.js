@@ -1,13 +1,18 @@
 import { config } from '../../config/index';
-import { get } from '../../utils/request';
 
-/** 获取单个商品详情 */
+/** 获取商品列表 */
+function mockFetchGood(ID = 0) {
+  const { delay } = require('../_utils/delay');
+  const { genGood } = require('../../model/good');
+  return delay().then(() => genGood(ID));
+}
+
+/** 获取商品列表 */
 export function fetchGood(ID = 0) {
   if (config.useMock) {
-    const { delay } = require('../_utils/delay');
-    const { genGood } = require('../../model/good');
-    return delay().then(() => genGood(ID));
+    return mockFetchGood(ID);
   }
-  // 真实后端调用
-  return get('/v1/goods/detail', { spuId: ID });
+  return new Promise((resolve) => {
+    resolve('real api');
+  });
 }

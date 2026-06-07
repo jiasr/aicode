@@ -1,30 +1,35 @@
 import { config } from '../../config/index';
-import { get, post } from '../../utils/request';
+
+/** 获取搜索历史 */
+function mockSearchHistory() {
+  const { delay } = require('../_utils/delay');
+  const { getSearchHistory } = require('../../model/search');
+  return delay().then(() => getSearchHistory());
+}
 
 /** 获取搜索历史 */
 export function getSearchHistory() {
   if (config.useMock) {
-    const { delay } = require('../_utils/delay');
-    const { getSearchHistory } = require('../../model/search');
-    return delay().then(() => getSearchHistory());
+    return mockSearchHistory();
   }
-  return get('/v1/goods/search-history');
+  return new Promise((resolve) => {
+    resolve('real api');
+  });
 }
 
-/** 获取热门搜索 */
+/** 获取搜索历史 */
+function mockSearchPopular() {
+  const { delay } = require('../_utils/delay');
+  const { getSearchPopular } = require('../../model/search');
+  return delay().then(() => getSearchPopular());
+}
+
+/** 获取搜索历史 */
 export function getSearchPopular() {
   if (config.useMock) {
-    const { delay } = require('../_utils/delay');
-    const { getSearchPopular } = require('../../model/search');
-    return delay().then(() => getSearchPopular());
+    return mockSearchPopular();
   }
-  return get('/v1/goods/search-popular');
-}
-
-/** 添加搜索记录 */
-export function addSearchHistory(keyword, userId) {
-  if (config.useMock) {
-    return Promise.resolve({ success: true });
-  }
-  return post('/v1/goods/search-add', { keyword, userId });
+  return new Promise((resolve) => {
+    resolve('real api');
+  });
 }

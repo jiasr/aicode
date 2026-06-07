@@ -19,9 +19,32 @@ class GoodsCatalogAdd(Resource):
         data = json.loads(request.data)
         return goodscatalog_service.goodscatalog_add(data)
 
+@ns_goodscatalog.route('/update/<string:id>', methods=['POST'])
+class GoodsCatalogList(Resource):
+    def post(self,id):
+        params =json.loads(request.data)
+        params["id"]=id
+        return goodscatalog_service.goodscatalog_update(params)
+
 
 @ns_goodscatalog.route('/list', methods=['GET'])
 class GoodsCatalogList(Resource):
+    def post(self):
+        data = json.loads(request.data)
+        return goodscatalog_service.goodscatalog_list(data)
+
+
+@ns_goodscatalog.route('/tree', methods=['GET'])
+class GoodsCatalogList(Resource):
     def get(self):
         params = request.args
-        return goodscatalog_service.goodscatalog_list(params)
+        return goodscatalog_service.goodscatalog_tree(params)
+
+
+
+@ns_goodscatalog.route('/delete/<string:id>', methods=['POST'])
+class GoodsCatalogList(Resource):
+    def post(self,id):
+        params ={}
+        params["id"]=id
+        return goodscatalog_service.goodscatalog_delete(params)

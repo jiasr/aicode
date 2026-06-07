@@ -3,15 +3,17 @@ from mall.db.models.GoodsCatalog.sql import GoodsCatalogDao
 from oslo_log import log as logging
 
 
-@deco_catch_view_exception("用户添加")
-def goodscatalog_add(params):
+@deco_catch_view_exception("分类添加")
+def goodscatalog_add(data):
+    cata = GoodsCatalogDao.goods_catalog_add(data)
+    return cata
 
-    result_list = []
-    users = GoodsCatalogDao.goods_catalog_add()
+@deco_catch_view_exception("分类修改")
+def goodscatalog_update(data):
+    cata = GoodsCatalogDao.goods_catalog_update(data)
+    return cata
 
-    return users
-
-@deco_catch_view_exception("用户列表")
+@deco_catch_view_exception("分类列表")
 def goodscatalog_list(params):
 
     count,users = GoodsCatalogDao.goods_catalog_list(params)
@@ -20,3 +22,11 @@ def goodscatalog_list(params):
     result["data"] =[row.to_dict() for row in users]
 
     return result
+
+@deco_catch_view_exception("分类树")
+def goodscatalog_tree(params):
+    return  GoodsCatalogDao.goods_catalog_tree(params)
+
+@deco_catch_view_exception("分类树")
+def goodscatalog_delete(params):
+    return  GoodsCatalogDao.goods_catalog_delete(params)
