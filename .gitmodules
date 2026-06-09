@@ -1,0 +1,9 @@
+[submodule "mall-admin"]
+	path = mall-admin
+	url = git@github.com:jiasr/mall-admin.git
+[submodule "mallservice-python"]
+	path = mallservice-python
+	url = git@github.com:jiasr/mallservice-python.git
+[submodule "mall-littleprogram"]
+	path = mall-littleprogram
+	url = git@github.com:jiasr/mall-littleprogram.git
