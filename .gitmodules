@@ -7,3 +7,9 @@
 [submodule "mall-littleprogram"]
 	path = mall-littleprogram
 	url = git@github.com:jiasr/mall-littleprogram.git
+[submodule "SDK_ReleaseforAndroid"]
+	path = SDK_ReleaseforAndroid
+	url = git@github.com:jiasr/SDK_ReleaseforAndroid.git
+[submodule "jinxiaocun"]
+	path = jinxiaocun
+	url = git@github.com:jiasr/jinxiaocun.git
