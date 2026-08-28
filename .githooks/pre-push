@@ -1,0 +1,29 @@
+#!/bin/sh
+# pre-push hook for aicode superproject
+# Runs check-commit.ps1 before push; aborts push if it fails.
+# Requires: git for Windows (bash + powershell available)
+
+root=$(git rev-parse --show-toplevel)
+script="$root/check-commit.ps1"
+
+if [ -f "$script" ]; then
+    if command -v powershell >/dev/null 2>&1; then
+        echo ""
+        echo ">> pre-push: running check-commit.ps1 ..."
+        powershell -NoProfile -ExecutionPolicy Bypass -File "$script"
+        rc=$?
+        if [ $rc -ne 0 ]; then
+            echo ""
+            echo ">> pre-push: check FAILED. Push aborted. Fix the issues above first."
+            echo ">> pre-push: (to bypass intentionally: git push --no-verify)"
+            exit 1
+        fi
+        echo ">> pre-push: check passed."
+    else
+        echo ">> pre-push: powershell not found in PATH, skipping check."
+    fi
+else
+    echo ">> pre-push: check-commit.ps1 not found at $script, skipping check."
+fi
+
+exit 0
