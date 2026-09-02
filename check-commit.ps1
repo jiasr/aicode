@@ -90,21 +90,53 @@ if ($pointerLines.Count -eq 0) {
     }
 }
 
-# ---------- 4. sensitive files ----------
-$sensitivePatterns = @("gds_token", ".env", "*.key", "*.pem", "password", "secret")
-$sensitiveFound = @()
-foreach ($f in @(git -c core.quotepath=false ls-files)) {
-    foreach ($p in $sensitivePatterns) {
-        if ($f -like $p) {
-            $sensitiveFound += $f
-            break
+# ---------- 4. sensitive files (superproject + every submodule) ----------
+# Note 1: the superproject's ls-files only lists submodule paths as gitlink entries,
+#         so files tracked INSIDE a submodule must be checked in that submodule itself.
+# Note 2: patterns use wildcard substring matching. Bare words like "gds_token" would
+#         never match a real path (e.g. mall/common/gds_token.json), so every pattern
+#         must carry wildcards. Keyword patterns (password/secret) are limited to data
+#         file extensions to avoid false positives on source code such as
+#         SDK_ReleaseforAndroid's GridPasswordView sample classes.
+$sensitivePatterns = @(
+    "*gds_token*",
+    "*.env", "*.env.*",
+    "*.key", "*.pem", "*.p12", "*.pfx",
+    "id_rsa*", "*credential*",
+    "*password*.json", "*password*.txt", "*password*.yml", "*password*.yaml",
+    "*secret*.json", "*secret*.txt", "*secret*.yml", "*secret*.yaml"
+)
+
+$reposToScan = New-Object System.Collections.Generic.List[object]
+$reposToScan.Add(@{ Path = $root; Label = "aicode" })
+foreach ($sub in $submodules) {
+    $reposToScan.Add(@{ Path = (Join-Path $root $sub); Label = $sub })
+}
+
+$sensitiveFound = New-Object System.Collections.Generic.List[string]
+foreach ($repo in $reposToScan) {
+    if (-not (Test-Path $repo.Path)) { continue }
+    Push-Location $repo.Path
+    foreach ($f in @(git -c core.quotepath=false ls-files)) {
+        foreach ($p in $sensitivePatterns) {
+            if ($f -like $p) {
+                $sensitiveFound.Add($repo.Label + "/" + $f)
+                break
+            }
         }
     }
+    Pop-Location
 }
+
 if ($sensitiveFound.Count -eq 0) {
-    Add-Check "sensitive files" $true "none tracked"
+    Add-Check "sensitive files" $true "none tracked (superproject + all submodules)"
 } else {
-    Add-Check "sensitive files" $false ("Possible sensitive files tracked by git, please verify:")
+    # file names are inlined into Detail so they stay visible even when the
+    # host stream is redirected/piped (Write-Host alone can get swallowed)
+    $shown = @($sensitiveFound | Select-Object -First 3)
+    $detail = $sensitiveFound.Count.ToString() + " sensitive file(s) tracked: " + ($shown -join " | ")
+    if ($sensitiveFound.Count -gt 3) { $detail += " | ..." }
+    Add-Check "sensitive files" $false $detail
     foreach ($f in $sensitiveFound) {
         Write-Host ("      " + $f) -ForegroundColor Yellow
     }
