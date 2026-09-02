@@ -108,6 +108,48 @@
 - **UI**: TDesign Miniprogram
 - 包含首页、商品浏览、购物车、下单、个人中心等完整购物流程
 
+## 开发协作规范
+
+> 本仓库为 git **superproject**，下方所有子项目均为独立 git 子模块。开发与协作规范以 [`doc/开发规范汇总.md`](./doc/开发规范汇总.md) 为**唯一载体**，任何工具/成员新增或修正规范都应同步到该文件（更新日期 + 注明来源），不在对话或其它位置分叉维护。
+
+### AI 协作入口（工具无关）
+
+无论使用何种 AI 编码工具（CodeBuddy / Qoder / Cursor / Claude / Copilot 等），每个仓库根目录均提供以下入口文件，打开仓库即自动读取并引导至规范汇总：
+
+- `AGENTS.md` —— 主入口（Codex / Claude Code / Cursor / Cline / Windsurf / Aider / CodeBuddy 等）
+- `CLAUDE.md` —— Claude 系列
+- `.cursorrules` —— Cursor
+- `.github/copilot-instructions.md` —— GitHub Copilot
+
+> 规范内容只在 `doc/开发规范汇总.md` 维护，上述入口文件只做索引，不复制规则。
+
+### 子模块清单
+
+| 子模块 | 说明 |
+|--------|------|
+| `mallservice-python` | 后端 API 服务 |
+| `mall-admin` | 后台管理前端 |
+| `mall-littleprogram` | 微信小程序 |
+| `jinxiaocun` | 进销存相关 |
+| `SDK_ReleaseforAndroid` | Android SDK |
+
+### 提交前检查
+
+```powershell
+cd e:\aicode
+powershell -ExecutionPolicy Bypass -File .\check-commit.ps1
+```
+
+- 脚本逐项检查：父仓库工作区、各子模块脏状态/未推送/落后远程、子模块指针一致性、敏感文件。
+- 父仓库已配置 **pre-push hook**（`check-commit.ps1`），任何方式执行 `git push` 都会先自动校验，FAIL 则中断推送。
+- 提交信息格式：`<type>: <中文描述>`，type ∈ `feat` / `fix` / `chore` / `docs` / `refactor` / `style` / `test`。
+
+### 子模块联动（铁律）
+
+子模块提交推送后，**必须**在父仓库 `aicode` 执行 `git add <子模块路径>` 并提交推送指针更新，否则父仓库会持续显示子模块 M 变更。
+
+（本节依据 `doc/开发规范汇总.md` 第五章与本次协作补充，来源：[CodeBuddy]）
+
 ## 快速开始
 
 ### 环境要求
