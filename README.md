@@ -136,8 +136,8 @@
 ### 提交前检查
 
 ```powershell
-cd e:\aicode
-powershell -ExecutionPolicy Bypass -File .\check-commit.ps1
+cd <父仓库根目录>
+powershell -ExecutionPolicy Bypass -File ./check-commit.ps1
 ```
 
 - 脚本逐项检查：父仓库工作区、各子模块脏状态/未推送/落后远程、子模块指针一致性、敏感文件。

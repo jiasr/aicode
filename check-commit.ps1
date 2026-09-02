@@ -23,7 +23,7 @@ Write-Host ""
 # ---------- 0. environment ----------
 $root = (Get-Location).Path
 if (-not (Test-Path (Join-Path $root ".gitmodules"))) {
-    Add-Check "location" $false "Not the aicode superproject root (no .gitmodules). Run in e:\aicode"
+    Add-Check "location" $false "Not the aicode superproject root (no .gitmodules). Run in the cloned aicode root directory"
     $checks | Format-Table -AutoSize
     exit 1
 }
